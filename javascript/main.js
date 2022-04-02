@@ -2,6 +2,7 @@ var config = {
     type: Phaser.AUTO,
     width: window_config.width,
     height: window_config.height,
+    backgroundColor: window_config.backgroundcolor,
     physics: {
         default: 'arcade',
         arcade: {
@@ -11,5 +12,4 @@ var config = {
         Homepage
     ]
 };
-
 var game = new Phaser.Game(config);
