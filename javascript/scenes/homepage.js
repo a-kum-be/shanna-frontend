@@ -13,7 +13,6 @@ class Homepage extends Phaser.Scene{
 
     preload(){
         this.applicationLogo;
-        this.graph = exampleGraph
         this.load.image('pencil', './images/pencil.png');
     }
 
