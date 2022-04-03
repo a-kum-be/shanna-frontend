@@ -1,5 +1,3 @@
-import { Graph } from 'graph';
-
 var currNode = "None";
 
 (function($){
