@@ -203,11 +203,34 @@
       }
       return that
     }    
+
   
     $(document).ready(function(){
       var sys = arbor.ParticleSystem(1000, 600, 0.5) // create the system with sensible repulsion/stiffness/friction
       sys.parameters({gravity:true}) // use center-gravity to make the graph settle nicely (ymmv)
       sys.renderer = Renderer("#viewport") // our newly created renderer will have its .init() method called shortly by sys...
+
+      $('#submit-button').on('click', function() {
+        var newKnowledge = $('#submit-area').val();
+        fetch("http://54.74.246.181:8080/api/knowledge/post", {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({text: newKnowledge})
+        }).then(res => res.json())
+          .then(graph => {
+            graph.forEach(node => {
+              sys.addNode(node.name, {description: node.name})
+            })
+            graph.forEach(node => {
+                node.pointedBy.forEach(parent => {
+                    sys.addEdge(parent.name, node.name);
+                })
+            })
+          });
+      })
 
       fetch("http://54.74.246.181:8080/api/knowledge/getAll")
       .then(response => response.json())
