@@ -2,6 +2,7 @@ class Graph{
 
     constructor(noOfvert) 
     {
+        console.log('weclome')
         this.noOfvert = noOfvert; 
         this.AdjList = new Map(); 
     }
