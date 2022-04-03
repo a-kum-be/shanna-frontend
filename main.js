@@ -259,15 +259,27 @@ var currNode = "None";
                 // Count the amount of nodes in the subgraph
                 var totalCount = 1;
                 var stack = [];
+                var vertices = [];
                 stack.push(currNode);
                 while (stack.length != 0) {
                     var curr = stack.pop();
                     var neighbours = sys.getEdgesTo(curr);
                     totalCount += neighbours.length;
                     neighbours.forEach(n => stack.push(n));
+                    vertices.push(curr);
                 }
 
-                graph = new Graph(totalCount);
+                var AdjList = new Map(); 
+                var noOfVert = totalCount;
+                debugger;
+                vertices.forEach(v => {
+                  AdjList.set(v, [])
+                  sys.getEdgesTo(curr).forEach(n => {
+                    debugger;
+                    AdjList.get(v).push(n);
+                  })
+                });
+
             }
         })
 
@@ -278,7 +290,7 @@ var currNode = "None";
             else {
                 sys.getNode(currNode).data.learned = true;
             }
-        })
+        });
 
         fetch("http://54.74.118.216:8080/api/knowledge/getAll")
             .then(response => response.json())
@@ -295,8 +307,7 @@ var currNode = "None";
                         });
                     data['nodes'][node.name] = { 'color': 'blue', 'label': node.name, 'description': node.name, 'text': node.description };
                 })
-            })
-          });
+        });
 
       $('#fileInput').on('input', function(e) {
         var myHeaders = new Headers();
@@ -317,25 +328,6 @@ var currNode = "None";
               .catch(error => console.log('error', error));
       })
 
-      $('#start-button').on('click', function() {
-        if(currNode == "None") {
-          alert("Please choose a node");
-        } else {
-          // Count the amount of nodes in the subgraph
-          var totalCount = 1;
-          var stack = [];
-          stack.push(currNode);
-          while(stack.length != 0) {
-            var curr = stack.pop();
-            var neighbours = sys.getEdgesTo(curr);
-            totalCount += neighbours.length;
-            neighbours.forEach(n => stack.push(n));
-          }
-
-          console.log(totalCount);
-        }
-      })
-
       fetch("http://54.74.118.216:8080/api/knowledge/getAll")
       .then(response => response.json())
       .then(graph => {
@@ -354,4 +346,5 @@ var currNode = "None";
           })
           sys.graft(data);
       });
+    });
 })(this.jQuery)
