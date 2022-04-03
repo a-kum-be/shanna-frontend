@@ -1,11 +1,9 @@
-//
-//  main.js
-//
-//  A project template for using arbor.js
-//
+import { Graph } from 'graph';
 
+var currNode = "None";
 
 (function($){
+
     var nodeStyle = {
         fillStyle: "#FF0000",
         font:"25px Arial",
@@ -13,6 +11,7 @@
         padding: 10,
         textColor: "#00ff00"
     }
+
 
     // in percentage
     var screenPadding = {
@@ -157,6 +156,13 @@
           // for moves and mouseups while dragging
           var handler = {
             clicked:function(e){
+              var pos = $(this).offset();
+              var p = {x:e.pageX-pos.left, y:e.pageY-pos.top}
+              selected = nearest = dragged = particleSystem.nearest(p);
+
+              currNode = selected.node.name;
+              $('#submit-area').val(selected.node.data.text);
+
               var pos = $(canvas).offset();
               _mouseP = arbor.Point(e.pageX-pos.left, e.pageY-pos.top)
               dragged = particleSystem.nearest(_mouseP);
@@ -168,7 +174,7 @@
   
               $(canvas).bind('mousemove', handler.dragged)
               $(window).bind('mouseup', handler.dropped)
-  
+
               return false
             },
             dragged:function(e){
@@ -212,7 +218,7 @@
 
       $('#submit-button').on('click', function() {
         var newKnowledge = $('#submit-area').val();
-        fetch("http://54.74.246.181:8080/api/knowledge/post", {
+        fetch("http://54.74.118.216:8080/api/knowledge/post", {
           method: 'POST',
           headers: {
             'Accept': 'application/json, text/plain, */*',
@@ -232,37 +238,43 @@
           });
       })
 
-      fetch("http://54.74.246.181:8080/api/knowledge/getAll")
+      $('#start-button').on('click', function() {
+        if(currNode == "None") {
+          alert("Please choose a node");
+        } else {
+          // Count the amount of nodes in the subgraph
+          var totalCount = 1;
+          var stack = [];
+          stack.push(currNode);
+          while(stack.length != 0) {
+            var curr = stack.pop();
+            var neighbours = sys.getEdgesTo(curr);
+            totalCount += neighbours.length;
+            neighbours.forEach(n => stack.push(n));
+          }
+
+          console.log(totalCount);
+        }
+      })
+
+      fetch("http://54.74.118.216:8080/api/knowledge/getAll")
       .then(response => response.json())
       .then(graph => {
+          var data = {
+            nodes: {},
+            edges: {}
+          };
           graph.forEach(node => {
-              sys.addNode(node.name, {description: node.name})
+              sys.addNode(node.name, {description: node.name});
+              data['nodes'][node.name] = {'color': 'blue', 'label': node.name, 'description': node.name, 'text': node.description};
           })
           graph.forEach(node => {
               node.pointedBy.forEach(parent => {
                   sys.addEdge(parent.name, node.name);
               })
           })
+          sys.graft(data);
       });
-        // add some nodes to the graph and watch it go...
-        //   sys.addNode('Iwan', {description: "Iwan"})
-        //   sys.addNode('Radi', {description: "Radi"})
-        //   sys.addNode('Eli', {description: "Eli"})
-        //   sys.addNode('Stefan', {description: "Stefan"})
-        //   sys.addNode('Rado', {description: "Rado"})
-        //   sys.addNode('Jorkata', {description: "Jorkata"})
-
-        //   sys.addEdge('Iwan', "Rado")
-        //   sys.addEdge('Jorkata', "Rado")
-        //   sys.addEdge('Rado', "Radi")
-        //   sys.addEdge('Eli', "Stefan")
-        //   sys.addEdge('Stefan', "Iwan")
-        //   sys.addEdge('Rado', "Eli")
-        //   sys.addEdge('Stefan', "Rado")
-        // var input = document.createElement("input");
-        // input.type = "text";
-        // input.className = "css-class-name"; // set the CSS class
-        // container.appendChild(input); // put it into the DOM
     })
   
   })(this.jQuery)
