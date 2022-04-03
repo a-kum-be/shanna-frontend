@@ -23,11 +23,14 @@
     <script src="./graph.js"></script>
 		<script src="./main.js"></script>
 
-        <div class="container-fluid">
-            <div class="row fixed-bottom">
-              <div class="col-9 offset-2 ">
-                <div class="col-auto my-1">
+        <div class="container-fluid" overflow="hidden">
+            <div class="row fixed-bottom" overflow="hidden">
+              <div class="col-9 offset-2 " overflow="hidden">
+                <div class="col-auto my-1" overflow="hidden">
                   <button id='submit-button' type="submit" class="btn btn-primary">Submit</button>
+                </div>
+                <div onload="init()">
+                  <input id="fileInput" type="file" name="file" />
                 </div>
                 <div class="form-group">
                   <textarea id='submit-area' class="form-control" rows="10" id="comment"></textarea>
@@ -36,8 +39,8 @@
             </div>
           </div>
 
-        <div class="container-fluid">
-          <div class="row fixed-top">
+        <div class="container-fluid" overflow="hidden">
+          <div class="row fixed-top" overflow="hidden">
             <div class="col-9 offset-2">
               <div class="col-auto my-1">
                 <button id='start-button' type='start' class="btn btn-primary">Start</button>
@@ -45,9 +48,10 @@
             </div>
           </div>
         </div>
+
+        
       
 	</head>
-	<body style="background-color:black;">
-
+	<body >
 	</body>
 </html>

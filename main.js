@@ -236,6 +236,25 @@ var currNode = "None";
           });
       })
 
+      $('#fileInput').on('input', function(e) {
+        var myHeaders = new Headers();
+        myHeaders.append("img", "");
+        var formdata = new FormData();
+          formdata.append("resource", event.target.files[0], "10.jpg");
+      
+          var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: formdata,
+          redirect: 'follow'
+          };
+      
+          fetch("http://54.74.118.216:8080/api/detect/post", requestOptions)
+              .then(response => response.text())
+              .then(result => console.log(result))
+              .catch(error => console.log('error', error));
+      })
+
       $('#start-button').on('click', function() {
         if(currNode == "None") {
           alert("Please choose a node");
